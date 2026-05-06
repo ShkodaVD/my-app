@@ -1,0 +1,10 @@
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+  
+  python-app:
+    build: .
+    ports:
+      - "8000:8000"
