@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Трекер полива растений</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Трекер полива растений</h1>
+            <p class="subtitle">Следите за здоровьем ваших зеленых питомцев</p>
+        </header>
+
+        <main>
+            <div class="card">
+                <img src="{{ url_for('static', filename='plant.jpg') }}" alt="Комнатное растение" class="plant-image">
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Всего поливов:</span>
+                        <span id="waterCount" class="stat-value">{{ waterings }}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Посещений страницы:</span>
+                        <span id="viewCount" class="stat-value">{{ views }}</span>
+                    </div>
+                </div>
+                <button onclick="waterPlant()" class="action-button">Полить растение</button>
+                <p class="status" id="statusMessage">Растение ждет ухода...</p>
+            </div>
+        </main>
+
+        <footer>
+            <p>Данные обновляются в реальном времени. Метрики доступны по адресу: <a href="/metrics">/metrics</a></p>
+        </footer>
+    </div>
+
+    <script>
+        async function waterPlant() {
+            try {
+                const response = await fetch('/water', { method: 'POST' });
+                const data = await response.json();
+                
+                document.getElementById('waterCount').innerText = data.waterings;
+                document.getElementById('statusMessage').innerText = 'Полив выполнен успешно!';
+                
+                setTimeout(() => {
+                    document.getElementById('statusMessage').innerText = 'Растение ждет ухода...';
+                }, 2000);
+            } catch (error) {
+                console.error('Ошибка:', error);
+                document.getElementById('statusMessage').innerText = 'Произошла ошибка при отправке запроса';
+            }
+        }
+    </script>
+</body>
+</html>
